@@ -9,6 +9,8 @@ import scrapy
 
 
 class XlistItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    status = scrapy.Field() # downloaded, purchase or subscription required 
+    filename = scrapy.Field()
+    start_url = scrapy.Field()
+    end_url = scrapy.Field()
+
