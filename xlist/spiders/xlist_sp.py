@@ -36,12 +36,13 @@ class XlistSpSpider(scrapy.Spider):
 
         os.makedirs('./docs/', exist_ok=True)
 
-        for file_number, ref in enumerate(self.refs[frm:to], 1): #[2500:2674]
+        for file_number, ref in enumerate(self.refs[frm:to], 1):
             yield scrapy.Request(ref, self.parse, errback=self.errback_httpbin,
                                 dont_filter=True, 
-                                meta={'download_timeout': 180,  # 500
+                                meta={'download_timeout': 300,
                                       'file_number': str(file_number),
-                                      'start_url': ref}) # , 'max_retry_times': 20
+                                      'start_url': ref,
+                                      'max_retry_times': 5})
 
     def errback_httpbin(self, failure):
         request = failure.request
@@ -214,7 +215,7 @@ class XlistSpSpider(scrapy.Spider):
 
             elif start_domain in ['www.agajournals.org', 'www.ajog.org', 'www.alzheimersanddementia.com', 
                                   'www.annalsthoracicsurgery.org', 'www.atherosclerosis-journal.com', 'www.biologicalpsychiatryjournal.com',
-                                  'www.cghjournal.org', 'www.clinicaltherapeutics.com', 'www.dldjournalonline.com', 'www.fertstert.org', 'www.jaad.org']:
+                                  'www.cghjournal.org', 'www.dldjournalonline.com', 'www.fertstert.org']:
                 go_href = response.xpath('//a[@class="pdfLink"]/@href').get(default='')
                 if go_href:
                     yield response.follow(go_href, self.parse, dont_filter=True, meta=response.meta)
@@ -437,7 +438,7 @@ class XlistSpSpider(scrapy.Spider):
             elif start_domain in ['www.gastrojournal.org', 'www.hindawi.com', 'www.jacionline.org', 
                                   'www.jci.org', 'www.journalofdairyscience.org', 'www.journal-of-hepatology.eu', 'www.jpeds.com', 
                                   'www.mayoclinicproceedings.org',
-                                  'www.physiology.org', 'www.tandfonline.com']: 
+                                  'www.physiology.org', 'www.tandfonline.com', 'www.clinicaltherapeutics.com', 'www.jaad.org']: 
                 yield XlistItem(status='other download problem',
                                 filename='',
                                 start_url=response.meta.get('start_url'),
